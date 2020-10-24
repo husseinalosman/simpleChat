@@ -48,8 +48,28 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+	  switch (((String) msg).split(" ")[0]) {
+	  case "#login":
+		  if(client.getInfo("loginId") != null) {
+			  try {
+				client.sendToClient("Command error, cannot reuse this command, closing connection.");
+				client.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		  }else{
+			  client.setInfo("loginId", ((String) msg).split(" ")[1]);
+			  System.out.println("Message received: " + msg + " from null");
+		  }
+		  
+		  break;
+	default:
+		System.out.println("Message received: " + msg + " from " + client.getInfo("loginId"));
+	    this.sendToAllClients(client.getInfo("loginId") +"> " + msg);
+	    break;
+	  }
+    
   }
     
   /**
@@ -70,6 +90,16 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server has stopped listening for connections.");
+  }
+  
+  protected void clientConnected(ConnectionToClient client) {
+	  System.out.println(client.getInfo("loginId") + " has logged on.");
+	  this.sendToAllClients(client.getInfo("loginId") +" has logged on.");
+  }
+
+  synchronized protected void clientDisconnected(
+		    ConnectionToClient client) {
+	  System.out.println(client.getInfo("loginId") + " has left the chat room!");
   }
   
   //Class methods ***************************************************
@@ -95,15 +125,18 @@ public class EchoServer extends AbstractServer
     }
 	
     EchoServer sv = new EchoServer(port);
-    
+      
     try 
     {
       sv.listen(); //Start listening for connections
+      //ServerConsole sc = new ServerConsole(sv);
+      //sc.accept();
     } 
     catch (Exception ex) 
     {
       System.out.println("ERROR - Could not listen for clients!");
     }
+    
   }
 }
 //End of EchoServer class
