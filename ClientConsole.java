@@ -93,7 +93,12 @@ public class ClientConsole implements ChatIF
         		client.closeConnection();
         		break;
         	case "#login":
-        		client.openConnection();
+        		try {
+        			client.openConnection();
+        		}catch (IOException e) {
+        			System.out.println("Cannot open connection. Awaiting command.");
+        		}
+        		
         		break;
         	case "#gethost":
         		display(client.getHost());
@@ -103,11 +108,11 @@ public class ClientConsole implements ChatIF
         		break;
         	case "#sethost":
         		client.setHost(message.split(" ")[1]);
-        		display("Set host to: " + message.split(" ")[1]);
+        		display("Host set to: " + message.split(" ")[1]);
         		break;
         	case "#setport":
         		client.setPort(Integer.parseInt(message.split(" ")[1]));
-        		display("Set port to: " + message.split(" ")[1]);
+        		display("Port set to: " + message.split(" ")[1]);
         		break;
         	default:
         		display("No such command exists!");

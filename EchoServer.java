@@ -61,6 +61,8 @@ public class EchoServer extends AbstractServer
 		  }else{
 			  client.setInfo("loginId", ((String) msg).split(" ")[1]);
 			  System.out.println("Message received: " + msg + " from null");
+			  System.out.println(client.getInfo("loginId") +" has logged on.");
+			  this.sendToAllClients(client.getInfo("loginId") +" has logged on.");
 		  }
 		  
 		  break;
@@ -88,18 +90,36 @@ public class EchoServer extends AbstractServer
    */
   protected void serverStopped()
   {
+	  this.sendToAllClients("Warning - Server has stopped listening for connections.");
     System.out.println
       ("Server has stopped listening for connections.");
   }
   
+  protected void serverClosed() {}
+  
+  protected void listeningException(Throwable exception) {
+	  System.out.println
+      ("Server has stopped listening for connections.");
+  }
+  
   protected void clientConnected(ConnectionToClient client) {
-	  System.out.println(client.getInfo("loginId") + " has logged on.");
-	  this.sendToAllClients(client.getInfo("loginId") +" has logged on.");
+	  System.out.println("A new client is attempting to connect to the server.");
   }
 
   synchronized protected void clientDisconnected(
 		    ConnectionToClient client) {
 	  System.out.println(client.getInfo("loginId") + " has left the chat room!");
+	  this.sendToAllClients(client.getInfo("loginId") + " has left the chat room!");
+  }
+  
+  synchronized protected void clientException(
+		    ConnectionToClient client, Throwable exception) {
+	  try {
+		client.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
   }
   
   //Class methods ***************************************************
@@ -129,8 +149,8 @@ public class EchoServer extends AbstractServer
     try 
     {
       sv.listen(); //Start listening for connections
-      //ServerConsole sc = new ServerConsole(sv);
-      //sc.accept();
+      ServerConsole sc = new ServerConsole(sv);
+      sc.accept();
     } 
     catch (Exception ex) 
     {

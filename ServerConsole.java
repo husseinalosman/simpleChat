@@ -11,7 +11,6 @@ public class ServerConsole implements ChatIF{
 	   */
 	  Scanner fromConsole; 
 	  EchoServer sv;
-	  ChatClient client;
 	  //Constructors ****************************************************
 
 	  /**
@@ -23,18 +22,6 @@ public class ServerConsole implements ChatIF{
 	  public ServerConsole(EchoServer sv) 
 	  {
 	    this.sv = sv;
-	    try 
-	    {
-	      client= new ChatClient("SERVER", "localhost", sv.getPort(), this);
-	      client.openConnection();
-	      
-	    } 
-	    catch(IOException exception) 
-	    {
-	      System.out.println("Error: Can't setup connection!"
-	                + " Terminating client.");
-	      System.exit(1);
-	    }
 	    
 	    // Create scanner object to read from console
 	    fromConsole = new Scanner(System.in); 
@@ -66,7 +53,7 @@ public class ServerConsole implements ChatIF{
 	        if (message.charAt(0) == '#') {
 	        	switch (message.split(" ")[0]) {
 	        	case "#quit":
-	        		sv.close();
+	        		System.exit(0);
 	        		break;
 	        	case "#stop":
 	        		sv.stopListening();
@@ -82,12 +69,14 @@ public class ServerConsole implements ChatIF{
 	        		break;
 	        	case "#setport":
 	        		sv.setPort(Integer.parseInt(message.split(" ")[1]));
+	        		display("Port set to: " + message.split(" ")[1]);
 	        		break;
 	        	default:
 	        		display("No such command exists!");
 	        	}
 	        }else {
-	        	client.handleMessageFromClientUI("SERVER MSG>" + message);
+	        	sv.sendToAllClients("SERVER MSG> " + message);
+	        	display("SERVER MSG> " + message);
 	        }
 	      }
 	    } 

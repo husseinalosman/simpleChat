@@ -98,7 +98,7 @@ public class ChatClient extends AbstractClient
   
   @Override
   protected void connectionException(Exception exception) {
-	  clientUI.display("Connection Exception");
+	  clientUI.display("Abnormal termination of connection");
   }
   
   @Override
