@@ -3,6 +3,8 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.nio.channels.ServerSocketChannel;
+
 import ocsf.server.*;
 
 /**
@@ -48,8 +50,28 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    String mess = String.valueOf(msg);
+    if(mess.charAt(0) == '#' && mess.charAt(1) == 'l' && mess.charAt(2) == 'o' && mess.charAt(3) == 'g'){
+      mess = mess.replaceAll("<", "");
+      mess = mess.replaceAll(">", "");
+      mess = mess.replaceAll("#login", "");
+      mess = mess.replaceAll(" ", "");
+
+      System.out.println("Message received: " + msg + " from " + client.getInfo("loginId"));
+      System.out.println(mess + " has logged on.");
+      client.setInfo("loginId", mess);
+
+      this.sendToAllClients(mess + " has logged on.");
+
+    }else{
+      System.out.println("Message received: " + msg + " from " + client.getInfo("loginId"));
+      this.sendToAllClients(client.getInfo("loginId") + "> " + msg);
+    }
+    
+  }
+
+  public void handleMessageFromServerUI(String message){
+    sendToAllClients("SERVER MSG> " + message);
   }
     
   /**
@@ -70,6 +92,21 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server has stopped listening for connections.");
+  }
+
+  @Override
+  protected void clientConnected(ConnectionToClient client){
+    System.out.println("A new client is attempting to connect to the server.");
+  }
+
+  @Override
+  synchronized protected void clientException(ConnectionToClient client, Throwable exception){
+    System.out.println(client.getInfo("loginId") + " has disconnected.");
+  }
+
+  @Override
+  synchronized protected void clientDisconnected(ConnectionToClient client){
+    System.out.println(client.getInfo("loginId") + " has disconnected.");
   }
   
   //Class methods ***************************************************
@@ -94,11 +131,12 @@ public class EchoServer extends AbstractServer
       port = DEFAULT_PORT; //Set port to 5555
     }
 	
-    EchoServer sv = new EchoServer(port);
+    ServerConsole sv = new ServerConsole(port);
     
     try 
     {
       sv.listen(); //Start listening for connections
+      sv.accept(); // listen for server user
     } 
     catch (Exception ex) 
     {
