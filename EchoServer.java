@@ -3,6 +3,7 @@
 // license found at www.lloseng.com 
 
 
+import client.ChatClient;
 import ocsf.server.*;
 
 /**
@@ -23,6 +24,10 @@ public class EchoServer extends AbstractServer
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
+  
+  //I add
+  ChatClient client;
+  
   
   //Constructors ****************************************************
   
@@ -51,7 +56,15 @@ public class EchoServer extends AbstractServer
     System.out.println("Message received: " + msg + " from " + client);
     this.sendToAllClients(msg);
   }
+  
     
+  //I add
+  public void handleMessageFromServer(Object msg) {
+	  System.out.println("SERVER MSG: " + msg);
+	  this.sendToAllClients(msg);
+  }
+  
+  
   /**
    * This method overrides the one in the superclass.  Called
    * when the server starts listening for connections.
@@ -61,6 +74,21 @@ public class EchoServer extends AbstractServer
     System.out.println
       ("Server listening for connections on port " + getPort());
   }
+  
+  
+  //I add
+  protected void clientConnected(ConnectionToClient client) {
+	  System.out.println("Client connected: "+client.toString());
+  }
+  
+  synchronized protected void clientDisconnected(ConnectionToClient client) {
+	  System.out.println("Client disconnected: "+client.toString());
+  }
+  
+  synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
+	  System.out.println("Client error: "+client.toString()+"exception"+exception.toString());
+  }
+  
   
   /**
    * This method overrides the one in the superclass.  Called

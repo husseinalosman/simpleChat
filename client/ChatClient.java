@@ -79,11 +79,11 @@ public class ChatClient extends AbstractClient
   }
   
   //methods connectionClosed() and connectionException()
-  protected void connectionClosed() {
+  public void connectionClosed() {
 	  System.out.println("Server closed, quiting");
   }
   
-  protected void connectionException(Exception exception) {
+  public void connectionException(Exception exception) {
 	  System.out.println("Server error, quiting");
   }
   
