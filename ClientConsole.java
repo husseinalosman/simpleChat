@@ -50,8 +50,9 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
+  
   public ClientConsole(String host, int port) 
-  {
+{
     try 
     {
       client= new ChatClient(host, port, this);
@@ -60,8 +61,8 @@ public class ClientConsole implements ChatIF
     } 
     catch(IOException exception) 
     {
-      System.out.println("Error: Can't setup connection!"
-                + " Terminating client.");
+      System.out.println("Error: Can't setup connection!"+ " Terminating client.");
+      
       //I add
       client.connectionClosed(); //when connection is not possible
       
