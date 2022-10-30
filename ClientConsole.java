@@ -141,8 +141,21 @@ public class ClientConsole implements ChatIF
       port = DEFAULT_PORT; //if exception from using arguments, use default port
       
     }
-    ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
-    chat.accept();  //Wait for console data
+    
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Entrez la valeur du port: ");
+    try {
+    	int port1 = sc.nextInt();
+    	ClientConsole chat= new ClientConsole(host, port1);
+    	chat.accept(); 
+    }
+    catch(Exception e) {
+    	System.out.println("ERROR - No login ID specified.  Connection aborted.");
+    	ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
+    	chat.accept();  //Wait for console data
+    }
+    
   }
+  
 }
 //End of ConsoleChat class

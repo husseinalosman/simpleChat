@@ -5,6 +5,7 @@
 package client;
 
 import ocsf.client.*;
+
 import common.*;
 import java.io.*;
 
@@ -85,6 +86,7 @@ public class ChatClient extends AbstractClient
   
   public void connectionException(Exception exception) {
 	  System.out.println("Server error, quiting");
+	  quit();
   }
   
   /**
