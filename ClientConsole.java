@@ -131,7 +131,7 @@ public class ClientConsole implements ChatIF
     {
       host = args[0];
       //I add
-      port = Integer.parseInt(args[1]);
+      port = Integer.parseInt(args[1]); //convert argument in int
       
     }
     catch(ArrayIndexOutOfBoundsException e)
@@ -141,18 +141,25 @@ public class ClientConsole implements ChatIF
       port = DEFAULT_PORT; //if exception from using arguments, use default port
       
     }
+    catch(NumberFormatException ne) {  //we check that it works for any other format
+    	port=DEFAULT_PORT;
+    }
+    ClientConsole chat= new ClientConsole(host, port);
+	chat.accept();  //Wait for console data
     
+	
+	
     Scanner sc = new Scanner(System.in);
     System.out.println("Entrez la valeur du port: ");
     try {
     	int port1 = sc.nextInt();
-    	ClientConsole chat= new ClientConsole(host, port1);
-    	chat.accept(); 
+    	ClientConsole chat2= new ClientConsole(host, port1);
+    	chat2.accept(); 
     }
     catch(Exception e) {
     	System.out.println("ERROR - No login ID specified.  Connection aborted.");
-    	ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
-    	chat.accept();  //Wait for console data
+    	ClientConsole chat2= new ClientConsole(host, DEFAULT_PORT);
+    	chat2.accept();  //Wait for console data
     }
     
   }

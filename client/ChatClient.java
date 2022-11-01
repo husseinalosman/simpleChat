@@ -67,26 +67,86 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
-    try
-    {
-      sendToServer(message);
+    try{
+    	if(message.startsWith("#")) {
+    		handleCommand(message);
+    	}
+    	else {
+    		sendToServer(message);
+    	}
     }
-    catch(IOException e)
-    {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
+    catch(IOException e){
+    	clientUI.display("Could not send message to server.  Terminating client.");
+    	quit();
     }
   }
+  //we create a method that implements the different commands
+  private void handleCommand (String cmd) { 
+	  if(cmd.equals("#quit")) {
+		  clientUI.display("client will quit");
+		  quit();
+	  }
+	  else if(cmd.equals("#logoff")) {
+		  try {
+			  if(this.isConnected()) {
+				  this.closeConnection();
+			  }
+			  else {
+				  System.out.println("the client is already disconnected");
+			  }
+		  } catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("there is a problem with the disconnection");
+		}
+	  }
+	  else if(cmd.equals("#login")) {
+		  if(this.isConnected()) {
+			  System.out.println("the client is already connected");
+			  }
+		  else {
+			  try {
+				  this.openConnection();
+			  } catch (IOException e) {
+				  // TODO Auto-generated catch block
+				  System.out.println("there is a problem with the connection");
+			  }
+		  }
+	  }
+	  else if(cmd.equals("#sethost")) {
+		  if(this.isConnected()) {
+			  System.out.println("the client is still connected");
+		  }
+		  else {
+			  
+		  }
+	  }
+	  else if(cmd.equals("#setport")) {
+		  if(this.isConnected()) {
+			  System.out.println("the client is still connected");
+		  }
+		  else {
+			  
+		  }
+	  }
+	  else if(cmd.equals("#getport")) {
+		  
+	  }
+	  else if(cmd.equals("#gethost")) {
+		  
+	  }
+	  
+  }
+  
   
   //methods connectionClosed() and connectionException()
+  @Override
   public void connectionClosed() {
-	  System.out.println("Server closed, quiting");
+	  clientUI.display("connection closed");
   }
   
   public void connectionException(Exception exception) {
-	  System.out.println("Server error, quiting");
-	  quit();
+	  clientUI.display("the server has stopped");
+	  System.exit(0);
   }
   
   /**
