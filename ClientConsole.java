@@ -124,21 +124,25 @@ public class ClientConsole implements ChatIF
   {
     String host = "";
     
-    //I add
-    int port=0; //the port number
+    //the port number
+    int port=0; 
+    
+    //the login id
+    String loginID;
 
     try
     {
-      host = args[0];
-      //I add
-      port = Integer.parseInt(args[1]); //convert argument in int
+    	loginID=args[0];
+    	host = args[1];
+    	//I add
+    	port = Integer.parseInt(args[2]); //convert argument in int
       
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
-      host = "localhost";
-      //I add
-      port = DEFAULT_PORT; //if exception from using arguments, use default port
+    	host = "localhost";
+    	//I add
+    	port = DEFAULT_PORT; //if exception from using arguments, use default port
       
     }
     catch(NumberFormatException ne) {  //we check that it works for any other format

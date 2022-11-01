@@ -19,6 +19,8 @@ import ocsf.server.*;
 public class EchoServer extends AbstractServer 
 {
   //Class variables *************************************************
+	
+  final private String key="loginKey";
   
   /**
    * The default port to listen on.
@@ -52,8 +54,18 @@ public class EchoServer extends AbstractServer
    */
   public void handleMessageFromClient(Object msg, ConnectionToClient client){
     System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    String msgStr=(String)msg;
+    if(msgStr.startsWith("#login")) {
+    	String loginID="";
+    	client.setInfo(key, loginID);
+    }
+    else {
+    	this.sendToAllClients(msg);
+    }
   }
+  
+  /*if you want to read the information saved in the client
+  we do client.getId(key) for return the login id*/
   
     
   //message from server user
