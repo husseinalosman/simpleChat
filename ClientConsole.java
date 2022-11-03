@@ -50,18 +50,21 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String host, int port) 
-  {
+  
+  public ClientConsole(String loginID,String host, int port) 
+{
     try 
     {
-      client= new ChatClient(host, port, this);
-      
-      
+      client= new ChatClient(loginID, host, port, this);
     } 
     catch(IOException exception) 
     {
-      System.out.println("Error: Can't setup connection!"
-                + " Terminating client.");
+      System.out.println("Error: Can't setup connection!"+ " Terminating client.");
+      
+      
+      client.connectionClosed(); //when connection is not possible
+      
+      
       System.exit(1);
     }
     
@@ -118,18 +121,40 @@ public class ClientConsole implements ChatIF
   public static void main(String[] args) 
   {
     String host = "";
-
-
-    try
-    {
-      host = args[0];
+    
+    //the port number
+    int port=0; 
+    
+    //the login id
+    String loginID="";
+    try {
+    	loginID = args[0];
+    } 
+    catch (ArrayIndexOutOfBoundsException e) {
+    	System.err.println("No login ID provided!");
+    	System.exit(1);
     }
-    catch(ArrayIndexOutOfBoundsException e)
-    {
-      host = "localhost";
+    	
+    try {
+    	host = args[1];
+    	
+    } catch (ArrayIndexOutOfBoundsException e) {
+    	host = "localhost"; 
+    	
     }
-    ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
-    chat.accept();  //Wait for console data
+    try{
+    	port= Integer.parseInt(args[2]); //convert argument in int
+    }catch(ArrayIndexOutOfBoundsException e){
+    	port=DEFAULT_PORT;  //if exception from using arguments, use default port
+    }
+    catch(NumberFormatException ne) {  //we check that it works for any other format
+    	port=DEFAULT_PORT;
+    }
+    
+    ClientConsole chat=new ClientConsole (loginID, host,port);
+    chat.accept();   //Wait for console data
+    
   }
+  
 }
 //End of ConsoleChat class
