@@ -117,7 +117,8 @@ public class ChatClient extends AbstractClient
 			  System.out.println("the client is still connected");
 		  }
 		  else {
-			  
+			  super.setHost((this.getHost())); 
+			  System.out.println("Port set to " + getHost());
 		  }
 	  }
 	  else if(cmd.equals("#setport")) {
@@ -125,14 +126,17 @@ public class ChatClient extends AbstractClient
 			  System.out.println("the client is still connected");
 		  }
 		  else {
-			  
+			  super.setPort((this.getPort())); 
+			  System.out.println("Port set to " + getPort());
 		  }
+	  			
 	  }
 	  else if(cmd.equals("#getport")) {
+		  System.out.println("Current port is " + this.getPort());
 		  
 	  }
 	  else if(cmd.equals("#gethost")) {
-		  
+		  System.out.println("Current port is " + this.getHost());
 	  }
 	  
   }
